@@ -17,10 +17,10 @@ public class CustomerRepository : Repository<Customer>
             .ToList();
     }
 
-    public Customer GetByEmail(string email)
+    public Customer? GetByEmail(string email)
     {
         return _unitOfWork
             .Query<Customer>()
-            .SingleOrDefault(x => x.Email == email);
+            .SingleOrDefault(x => x.Email.Value == email);
     }
 }

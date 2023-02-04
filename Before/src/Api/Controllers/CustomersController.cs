@@ -2,6 +2,7 @@
 using Logic.Entities;
 using Logic.Repositories;
 using Logic.Services;
+using Logic.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -32,10 +33,10 @@ public class CustomersController : Controller
 
         var dto = new CustomerDto
         {
-            Email = customer.Email,
+            Email = customer.Email.Value,
             Id = customer.Id,
             MoneySpent = customer.MoneySpent,
-            Name = customer.Name,
+            Name = customer.Name.Value,
             PurchasedMovies = customer.PurchasedMovies.Select(m => new PurchasedMovieDto
             {
                 ExpirationDate = m.ExpirationDate,
@@ -60,10 +61,10 @@ public class CustomersController : Controller
 
         var dtoCustomers = customers.Select(c => new CustomerInListDto
         {
-            Email = c.Email,
+            Email = c.Email.Value,
             Id = c.Id,
             MoneySpent = c.MoneySpent,
-            Name = c.Name,
+            Name = c.Name.Value,
             Status = c.Status.ToString(),
             StatusExpirationDate = c.StatusExpirationDate
         }).ToList();
@@ -88,8 +89,8 @@ public class CustomersController : Controller
 
             var customer = new Customer
             {
-                Email = item.Email,
-                Name = item.Name,
+                Email = new Email(item.Email),
+                Name = new CustomerName(item.Name),
                 MoneySpent = 0,
                 Status = CustomerStatus.Regular,
                 StatusExpirationDate = null
@@ -123,7 +124,7 @@ public class CustomersController : Controller
                 return BadRequest("Invalid customer id: " + id);
             }
 
-            customer.Name = item.Name;
+            customer.Name = new CustomerName(item.Name);
             _customerRepository.SaveChanges();
 
             return Ok();
