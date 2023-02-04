@@ -72,7 +72,7 @@ public class CustomersController : Controller
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] Customer item)
+    public IActionResult Create([FromBody] CreateCustomerDto item)
     {
         try
         {
@@ -86,9 +86,16 @@ public class CustomersController : Controller
                 return BadRequest("Email is already in use: " + item.Email);
             }
 
-            item.Id = 0;
-            item.Status = CustomerStatus.Regular;
-            _customerRepository.Add(item);
+            var customer = new Customer
+            {
+                Email = item.Email,
+                Name = item.Name,
+                MoneySpent = 0,
+                Status = CustomerStatus.Regular,
+                StatusExpirationDate = null
+            };
+            
+            _customerRepository.Add(customer);
             _customerRepository.SaveChanges();
 
             return Ok();
@@ -101,7 +108,7 @@ public class CustomersController : Controller
 
     [HttpPut]
     [Route("{id}")]
-    public IActionResult Update(long id, [FromBody] Customer item)
+    public IActionResult Update(long id, [FromBody] UpdateCustomerDto item)
     {
         try
         {
