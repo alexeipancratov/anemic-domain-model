@@ -14,7 +14,6 @@ public class Customer : Entity
     [RegularExpression(@"^(.+)@(.+)$", ErrorMessage = "Email is invalid")]
     public virtual string Email { get; set; }
 
-    [JsonConverter(typeof(StringEnumConverter))]
     public virtual CustomerStatus Status { get; set; }
 
     public virtual DateTime? StatusExpirationDate { get; set; }

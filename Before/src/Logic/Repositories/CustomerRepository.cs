@@ -14,12 +14,6 @@ public class CustomerRepository : Repository<Customer>
     {
         return _unitOfWork
             .Query<Customer>()
-            .ToList()
-            .Select(x =>
-            {
-                x.PurchasedMovies = null;
-                return x;
-            })
             .ToList();
     }
 

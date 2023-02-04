@@ -1,4 +1,5 @@
-﻿using Logic.Entities;
+﻿using Logic.Dtos;
+using Logic.Entities;
 using Logic.Repositories;
 using Logic.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -29,14 +30,45 @@ public class CustomersController : Controller
             return NotFound();
         }
 
-        return Json(customer);
+        var dto = new CustomerDto
+        {
+            Email = customer.Email,
+            Id = customer.Id,
+            MoneySpent = customer.MoneySpent,
+            Name = customer.Name,
+            PurchasedMovies = customer.PurchasedMovies.Select(m => new PurchasedMovieDto
+            {
+                ExpirationDate = m.ExpirationDate,
+                Id = m.Id,
+                Movie = new MovieDto
+                {
+                    Id = m.Movie.Id,
+                    Name = m.Movie.Name
+                },
+                Price = m.Price,
+                PurchaseDate = m.PurchaseDate
+            }).ToList()
+        };
+
+        return Json(dto);
     }
 
     [HttpGet]
     public JsonResult GetList()
     {
         IReadOnlyList<Customer> customers = _customerRepository.GetList();
-        return Json(customers);
+
+        var dtoCustomers = customers.Select(c => new CustomerInListDto
+        {
+            Email = c.Email,
+            Id = c.Id,
+            MoneySpent = c.MoneySpent,
+            Name = c.Name,
+            Status = c.Status.ToString(),
+            StatusExpirationDate = c.StatusExpirationDate
+        }).ToList();
+        
+        return Json(dtoCustomers);
     }
 
     [HttpPost]

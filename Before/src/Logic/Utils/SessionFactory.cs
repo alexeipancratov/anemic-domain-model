@@ -7,6 +7,8 @@ using FluentNHibernate.Conventions.Instances;
 using FluentNHibernate.Mapping;
 using NHibernate;
 using System.Reflection;
+using NHibernate.Dialect;
+using NHibernate.Tool.hbm2ddl;
 
 namespace Logic.Utils;
 
@@ -27,7 +29,7 @@ public class SessionFactory
     private static ISessionFactory BuildSessionFactory(string connectionString)
     {
         FluentConfiguration configuration = Fluently.Configure()
-            .Database(MsSqlConfiguration.MsSql2012.ConnectionString(connectionString))
+            .Database(MsSqlConfiguration.MsSql2012.ConnectionString(connectionString).Dialect<EnhancedMsSql2008Dialect>())
             .Mappings(m => m.FluentMappings
                 .AddFromAssembly(Assembly.GetExecutingAssembly())
                 .Conventions.Add(
