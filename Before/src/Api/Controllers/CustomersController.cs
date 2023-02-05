@@ -1,4 +1,5 @@
-﻿using Logic.Dtos;
+﻿using CSharpFunctionalExtensions;
+using Logic.Dtos;
 using Logic.Entities;
 using Logic.Repositories;
 using Logic.Services;
@@ -77,20 +78,23 @@ public class CustomersController : Controller
     {
         try
         {
-            if (!ModelState.IsValid)
+            var customerNameResult = CustomerName.Create(item.Name);
+            var emailResult = Email.Create(item.Email);
+            var combinedResult = Result.Combine(customerNameResult, emailResult);
+            if (combinedResult.IsFailure)
             {
-                return BadRequest(ModelState);
+                return BadRequest(combinedResult.Error);
             }
 
-            if (_customerRepository.GetByEmail(item.Email) != null)
+            if (_customerRepository.GetByEmail(emailResult.Value) != null)
             {
                 return BadRequest("Email is already in use: " + item.Email);
             }
 
             var customer = new Customer
             {
-                Email = new Email(item.Email),
-                Name = new CustomerName(item.Name),
+                Email = emailResult.Value,
+                Name = customerNameResult.Value,
                 MoneySpent = 0,
                 Status = CustomerStatus.Regular,
                 StatusExpirationDate = null
@@ -113,9 +117,10 @@ public class CustomersController : Controller
     {
         try
         {
-            if (!ModelState.IsValid)
+            var customerNameResult = CustomerName.Create(item.Name);
+            if (customerNameResult.IsFailure)
             {
-                return BadRequest(ModelState);
+                return BadRequest(customerNameResult.Error);
             }
 
             Customer customer = _customerRepository.GetById(id);
@@ -124,7 +129,7 @@ public class CustomersController : Controller
                 return BadRequest("Invalid customer id: " + id);
             }
 
-            customer.Name = new CustomerName(item.Name);
+            customer.Name = customerNameResult.Value;
             _customerRepository.SaveChanges();
 
             return Ok();

@@ -1,5 +1,6 @@
 ﻿using Logic.Entities;
 using Logic.Utils;
+using Logic.ValueObjects;
 
 namespace Logic.Repositories;
 
@@ -17,10 +18,10 @@ public class CustomerRepository : Repository<Customer>
             .ToList();
     }
 
-    public Customer? GetByEmail(string email)
+    public Customer? GetByEmail(Email email)
     {
         return _unitOfWork
             .Query<Customer>()
-            .SingleOrDefault(x => x.Email.Value == email);
+            .SingleOrDefault(x => x.Email == email);
     }
 }
