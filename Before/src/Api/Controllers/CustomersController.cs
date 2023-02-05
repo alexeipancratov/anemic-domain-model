@@ -95,7 +95,7 @@ public class CustomersController : Controller
             {
                 Email = emailResult.Value,
                 Name = customerNameResult.Value,
-                MoneySpent = 0,
+                MoneySpent = DollarsSpent.Of(0),
                 Status = CustomerStatus.Regular,
                 StatusExpirationDate = null
             };

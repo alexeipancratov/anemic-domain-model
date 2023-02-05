@@ -43,7 +43,7 @@ public class CustomerName : ValueObject<CustomerName>
         return customerName.Value;
     }
 
-    public static implicit operator CustomerName(string customerName)
+    public static explicit operator CustomerName(string customerName)
     {
         return Create(customerName).Value;
     }

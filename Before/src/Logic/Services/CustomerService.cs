@@ -1,4 +1,5 @@
 ﻿using Logic.Entities;
+using Logic.ValueObjects;
 
 namespace Logic.Services;
 
@@ -11,17 +12,18 @@ public class CustomerService
         _movieService = movieService;
     }
 
-    private decimal CalculatePrice(CustomerStatus status, DateTime? statusExpirationDate, LicensingModel licensingModel)
+    private DollarsSpent CalculatePrice(
+        CustomerStatus status, DateTime? statusExpirationDate, LicensingModel licensingModel)
     {
-        decimal price;
+        DollarsSpent price;
         switch (licensingModel)
         {
             case LicensingModel.TwoDays:
-                price = 4;
+                price = DollarsSpent.Of(4);
                 break;
 
             case LicensingModel.LifeLong:
-                price = 8;
+                price = DollarsSpent.Of(8);
                 break;
 
             default:
@@ -30,7 +32,7 @@ public class CustomerService
 
         if (status == CustomerStatus.Advanced && (statusExpirationDate == null || statusExpirationDate.Value >= DateTime.UtcNow))
         {
-            price = price * 0.75m;
+            price *= 0.75m;
         }
 
         return price;
@@ -39,7 +41,7 @@ public class CustomerService
     public void PurchaseMovie(Customer customer, Movie movie)
     {
         DateTime? expirationDate = _movieService.GetExpirationDate(movie.LicensingModel);
-        decimal price = CalculatePrice(customer.Status, customer.StatusExpirationDate, movie.LicensingModel);
+        DollarsSpent price = CalculatePrice(customer.Status, customer.StatusExpirationDate, movie.LicensingModel);
 
         var purchasedMovie = new PurchasedMovie
         {

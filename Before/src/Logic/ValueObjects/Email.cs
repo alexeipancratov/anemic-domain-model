@@ -44,7 +44,7 @@ public class Email : ValueObject<Email>
         return email.Value;
     }
 
-    public static implicit operator Email(string email)
+    public static explicit operator Email(string email)
     {
         return Create(email).Value;
     }

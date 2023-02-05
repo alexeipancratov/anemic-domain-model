@@ -13,7 +13,7 @@ public class CustomerMap : ClassMap<Customer>
         Map(x => x.Email).CustomType<string>().Access.CamelCaseField(Prefix.Underscore);
         Map(x => x.Status).CustomType<int>();
         Map(x => x.StatusExpirationDate).Nullable();
-        Map(x => x.MoneySpent);
+        Map(x => x.MoneySpent).CustomType<decimal>().Access.CamelCaseField(Prefix.Underscore);
 
         HasMany(x => x.PurchasedMovies);
     }
