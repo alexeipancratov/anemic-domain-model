@@ -1,22 +1,23 @@
 ﻿using System;
 using Logic.Entities;
+using Logic.ValueObjects;
 
 namespace Logic.Services;
 
 public class MovieService
 {
-    public DateTime? GetExpirationDate(LicensingModel licensingModel)
+    public ExpirationDate GetExpirationDate(LicensingModel licensingModel)
     {
-        DateTime? result;
+        ExpirationDate result;
 
         switch (licensingModel)
         {
             case LicensingModel.TwoDays:
-                result = DateTime.UtcNow.AddDays(2);
+                result = (ExpirationDate)DateTime.UtcNow.AddDays(2);
                 break;
 
             case LicensingModel.LifeLong:
-                result = null;
+                result = ExpirationDate.Infinity;
                 break;
 
             default:

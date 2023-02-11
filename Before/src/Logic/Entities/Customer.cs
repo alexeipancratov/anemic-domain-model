@@ -19,13 +19,18 @@ public class Customer : Entity
     }
 
     public virtual CustomerStatus Status { get; set; }
-
-    public virtual DateTime? StatusExpirationDate { get; set; }
+    
+    private DateTime? _statusExpirationDate;
+    public virtual ExpirationDate StatusExpirationDate
+    {
+        get => (ExpirationDate)_statusExpirationDate;
+        set => _statusExpirationDate = value;
+    }
 
     private decimal _moneySpent;
-    public virtual DollarsSpent MoneySpent
+    public virtual Dollars MoneySpent
     {
-        get => DollarsSpent.Of(_moneySpent);
+        get => Dollars.Of(_moneySpent);
         set => _moneySpent = value;
     }
 

@@ -95,7 +95,7 @@ public class CustomersController : Controller
             {
                 Email = emailResult.Value,
                 Name = customerNameResult.Value,
-                MoneySpent = DollarsSpent.Of(0),
+                MoneySpent = Dollars.Of(0),
                 Status = CustomerStatus.Regular,
                 StatusExpirationDate = null
             };
@@ -158,7 +158,7 @@ public class CustomersController : Controller
                 return BadRequest("Invalid customer id: " + id);
             }
 
-            if (customer.PurchasedMovies.Any(x => x.MovieId == movie.Id && (x.ExpirationDate == null || x.ExpirationDate.Value >= DateTime.UtcNow)))
+            if (customer.PurchasedMovies.Any(pm => pm.MovieId == movie.Id && !pm.ExpirationDate.IsExpired))
             {
                 return BadRequest("The movie is already purchased: " + movie.Name);
             }
@@ -187,7 +187,7 @@ public class CustomersController : Controller
                 return BadRequest("Invalid customer id: " + id);
             }
 
-            if (customer.Status == CustomerStatus.Advanced && (customer.StatusExpirationDate == null || customer.StatusExpirationDate.Value < DateTime.UtcNow))
+            if (customer.Status == CustomerStatus.Advanced && !customer.StatusExpirationDate.IsExpired)
             {
                 return BadRequest("The customer already has the Advanced status");
             }
