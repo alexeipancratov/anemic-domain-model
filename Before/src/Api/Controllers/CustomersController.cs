@@ -66,8 +66,8 @@ public class CustomersController : Controller
             Id = c.Id,
             MoneySpent = c.MoneySpent,
             Name = c.Name.Value,
-            Status = c.Status.ToString(),
-            StatusExpirationDate = c.StatusExpirationDate
+            Status = c.Status.Type.ToString(),
+            StatusExpirationDate = c.Status.ExpirationDate
         }).ToList();
         
         return Json(dtoCustomers);
@@ -91,14 +91,7 @@ public class CustomersController : Controller
                 return BadRequest("Email is already in use: " + item.Email);
             }
 
-            var customer = new Customer
-            {
-                Email = emailResult.Value,
-                Name = customerNameResult.Value,
-                MoneySpent = Dollars.Of(0),
-                Status = CustomerStatus.Regular,
-                StatusExpirationDate = null
-            };
+            var customer = new Customer(customerNameResult.Value, emailResult.Value);
             
             _customerRepository.Add(customer);
             _customerRepository.SaveChanges();
@@ -187,7 +180,7 @@ public class CustomersController : Controller
                 return BadRequest("Invalid customer id: " + id);
             }
 
-            if (customer.Status == CustomerStatus.Advanced && !customer.StatusExpirationDate.IsExpired)
+            if (customer.Status.IsAdvanced)
             {
                 return BadRequest("The customer already has the Advanced status");
             }
