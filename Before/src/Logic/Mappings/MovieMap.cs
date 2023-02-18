@@ -1,4 +1,5 @@
-﻿using FluentNHibernate.Mapping;
+﻿using FluentNHibernate;
+using FluentNHibernate.Mapping;
 using Logic.Entities;
 
 namespace Logic.Mappings;
@@ -9,7 +10,29 @@ public class MovieMap : ClassMap<Movie>
     {
         Id(x => x.Id);
 
+        DiscriminateSubClassesOnColumn("LicensingModel");
+
         Map(x => x.Name);
-        Map(x => x.LicensingModel).CustomType<int>();
+        // Map(x => x.LicensingModel).CustomType<int>();
+        
+        // This allows to map non-public props or fields.
+        // This throws exception in new NHibernate versions. So probably it can reveal it on its own.
+        // Map(Reveal.Member<Movie>("LicensingModel")).CustomType<int>();
+    }
+}
+
+public class TwoDaysMovieMap : SubclassMap<TwoDaysMovie>
+{
+    public TwoDaysMovieMap()
+    {
+        DiscriminatorValue(1);
+    }
+}
+
+public class LifeLongMovieMap : SubclassMap<LifeLongMovie>
+{
+    public LifeLongMovieMap()
+    {
+        DiscriminatorValue(2);
     }
 }

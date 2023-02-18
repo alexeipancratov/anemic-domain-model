@@ -24,6 +24,8 @@ public class CustomerStatus : ValueObject<CustomerStatus>
         _expirationDate = expirationDate;
     }
 
+    public decimal GetDiscount() => IsAdvanced ? 0.25m : 0m;
+
     public bool IsAdvanced => Type == CustomerStatusType.Advanced && !ExpirationDate.IsExpired;
 
     public CustomerStatus Promote() => new(CustomerStatusType.Advanced, (ExpirationDate)DateTime.UtcNow.AddYears(1));

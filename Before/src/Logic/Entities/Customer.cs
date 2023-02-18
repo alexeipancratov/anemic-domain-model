@@ -1,5 +1,4 @@
 ﻿using Logic.ValueObjects;
-using NHibernate.Engine;
 
 namespace Logic.Entities;
 
@@ -45,8 +44,11 @@ public class Customer : Entity
         Status = CustomerStatus.Regular;
     }
 
-    public virtual void AddPurchasedMovie(Movie movie, ExpirationDate expirationDate, Dollars price)
+    public virtual void PurchaseMovie(Movie movie)
     {
+        ExpirationDate expirationDate = movie.GetExpirationDate();
+        Dollars price = movie.CalculatePrice(Status);
+        
         var purchasedMovie = new PurchasedMovie
         {
             MovieId = movie.Id,
@@ -58,5 +60,23 @@ public class Customer : Entity
         
         _purchasedMovies.Add(purchasedMovie);
         MoneySpent += price;
+    }
+    
+    public virtual bool PromoteCustomer()
+    {
+        // at least 2 active movies during the last 30 days
+        if (PurchasedMovies.Count(pm => pm.ExpirationDate == ExpirationDate.Infinity
+                                                 || pm.ExpirationDate.Date >= DateTime.UtcNow.AddDays(-30)) < 2)
+            return false;
+
+        // at least 100 dollars spent during the last year
+        if (PurchasedMovies
+                .Where(x => x.PurchaseDate > DateTime.UtcNow.AddYears(-1))
+                .Sum(x => x.Price) < 100m)
+            return false;
+
+        Status = Status.Promote();
+
+        return true;
     }
 }

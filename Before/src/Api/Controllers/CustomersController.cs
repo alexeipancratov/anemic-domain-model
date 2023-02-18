@@ -2,7 +2,6 @@
 using Logic.Dtos;
 using Logic.Entities;
 using Logic.Repositories;
-using Logic.Services;
 using Logic.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,13 +12,11 @@ public class CustomersController : Controller
 {
     private readonly MovieRepository _movieRepository;
     private readonly CustomerRepository _customerRepository;
-    private readonly CustomerService _customerService;
 
-    public CustomersController(MovieRepository movieRepository, CustomerRepository customerRepository, CustomerService customerService)
+    public CustomersController(MovieRepository movieRepository, CustomerRepository customerRepository)
     {
         _customerRepository = customerRepository;
         _movieRepository = movieRepository;
-        _customerService = customerService;
     }
 
     [HttpGet]
@@ -156,7 +153,7 @@ public class CustomersController : Controller
                 return BadRequest("The movie is already purchased: " + movie.Name);
             }
 
-            _customerService.PurchaseMovie(customer, movie);
+            customer.PurchaseMovie(movie);
 
             _customerRepository.SaveChanges();
 
@@ -185,7 +182,7 @@ public class CustomersController : Controller
                 return BadRequest("The customer already has the Advanced status");
             }
 
-            bool success = _customerService.PromoteCustomer(customer);
+            bool success = customer.PromoteCustomer();
             if (!success)
             {
                 return BadRequest("Cannot promote the customer");
