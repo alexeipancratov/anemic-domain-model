@@ -1,3 +1,4 @@
+using Api;
 using Logic.Repositories;
 using Logic.Utils;
 
@@ -15,6 +16,9 @@ builder.Services.AddTransient<MovieRepository>();
 builder.Services.AddTransient<CustomerRepository>();
 
 var app = builder.Build();
+
+// Should be the first in the execution stack.
+app.UseMiddleware<ExceptionHandler>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

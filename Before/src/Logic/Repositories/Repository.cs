@@ -22,9 +22,4 @@ public abstract class Repository<T>
     {
         _unitOfWork.SaveOrUpdate(entity);
     }
-
-    public void SaveChanges()
-    {
-        _unitOfWork.Commit();
-    }
 }

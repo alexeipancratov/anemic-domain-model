@@ -3,3 +3,13 @@
 ###
 
 GET http://localhost:5146/api/Customers
+
+
+###
+
+POST http://localhost:5146/api/Customers/1/movies
+Content-Type: application/json
+
+{
+  "movieId": 1111
+}

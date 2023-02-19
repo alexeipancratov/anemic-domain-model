@@ -11,12 +11,8 @@ public class Customer : Entity
         set => _name = value;
     }
 
-    private string _email;
-    public virtual Email Email
-    {
-        get => (Email)_email;
-        protected set => _email = value; // protected to allow our ORM to set its value
-    }
+    private readonly string _email;
+    public virtual Email Email => (Email)_email;
 
     private decimal _moneySpent;
     public virtual Dollars MoneySpent
@@ -25,7 +21,7 @@ public class Customer : Entity
         protected set => _moneySpent = value;
     }
     
-    public virtual CustomerStatus Status { get; set; }
+    public virtual CustomerStatus Status { get; protected set; }
 
     private readonly IList<PurchasedMovie> _purchasedMovies;
     public virtual IReadOnlyList<PurchasedMovie> PurchasedMovies => _purchasedMovies.ToList();
