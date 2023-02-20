@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace Logic.ValueObjects;
+namespace Logic.Customers;
 
 public class Dollars : ValueObject<Dollars>
 {

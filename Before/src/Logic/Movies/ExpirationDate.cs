@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace Logic.ValueObjects;
+namespace Logic.Movies;
 
 public class ExpirationDate : ValueObject<ExpirationDate>
 {

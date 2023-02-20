@@ -1,12 +1,11 @@
-﻿using CSharpFunctionalExtensions;
-using Logic.Dtos;
-using Logic.Entities;
-using Logic.Repositories;
+﻿using Api.Utils;
+using CSharpFunctionalExtensions;
+using Logic.Customers;
+using Logic.Movies;
 using Logic.Utils;
-using Logic.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers;
+namespace Api.Customers;
 
 [Route("api/[controller]")]
 public class CustomersController : BaseController
@@ -132,7 +131,7 @@ public class CustomersController : BaseController
             return Error("Invalid customer id: " + id);
         }
 
-        if (customer.PurchasedMovies.Any(pm => pm.MovieId == movie.Id && !pm.ExpirationDate.IsExpired))
+        if (customer.HasPurchasedMovie(movie))
         {
             return Error("The movie is already purchased: " + movie.Name);
         }
@@ -152,17 +151,12 @@ public class CustomersController : BaseController
             return Error("Invalid customer id: " + id);
         }
 
-        if (customer.Status.IsAdvanced)
-        {
-            return Error("The customer already has the Advanced status");
-        }
+        Result canPromoteResult = customer.CanPromote();
+        if (canPromoteResult.IsFailure)
+            return Error(canPromoteResult.Error);
 
-        bool success = customer.PromoteCustomer();
-        if (!success)
-        {
-            return Error("Cannot promote the customer");
-        }
-
+        customer.Promote();
+        
         return Ok();
     }
 }

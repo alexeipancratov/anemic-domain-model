@@ -1,6 +1,7 @@
-﻿using Logic.ValueObjects;
+﻿using Logic.Common;
+using Logic.Customers;
 
-namespace Logic.Entities;
+namespace Logic.Movies;
 
 public abstract class Movie : Entity
 {

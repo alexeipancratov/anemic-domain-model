@@ -1,7 +1,7 @@
 using System.Net;
 using Newtonsoft.Json;
 
-namespace Api;
+namespace Api.Utils;
 
 public class ExceptionHandler
 {

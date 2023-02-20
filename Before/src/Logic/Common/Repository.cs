@@ -1,7 +1,6 @@
-﻿using Logic.Entities;
-using Logic.Utils;
+﻿using Logic.Utils;
 
-namespace Logic.Repositories;
+namespace Logic.Common;
 
 public abstract class Repository<T>
     where T : Entity

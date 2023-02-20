@@ -1,6 +1,8 @@
-﻿using Logic.ValueObjects;
+﻿using CSharpFunctionalExtensions;
+using Logic.Movies;
+using Entity = Logic.Common.Entity;
 
-namespace Logic.Entities;
+namespace Logic.Customers;
 
 public class Customer : Entity
 {
@@ -40,8 +42,17 @@ public class Customer : Entity
         Status = CustomerStatus.Regular;
     }
 
+    public virtual bool HasPurchasedMovie(Movie movie)
+    {
+        return PurchasedMovies.Any(pm => pm == movie && !pm.ExpirationDate.IsExpired);
+    }
+
     public virtual void PurchaseMovie(Movie movie)
     {
+        // In case client forgot to call this method beforehand.
+        if (HasPurchasedMovie(movie))
+            throw new Exception();
+        
         ExpirationDate expirationDate = movie.GetExpirationDate();
         Dollars price = movie.CalculatePrice(Status);
         
@@ -57,22 +68,35 @@ public class Customer : Entity
         _purchasedMovies.Add(purchasedMovie);
         MoneySpent += price;
     }
-    
-    public virtual bool PromoteCustomer()
-    {
-        // at least 2 active movies during the last 30 days
-        if (PurchasedMovies.Count(pm => pm.ExpirationDate == ExpirationDate.Infinity
-                                                 || pm.ExpirationDate.Date >= DateTime.UtcNow.AddDays(-30)) < 2)
-            return false;
 
-        // at least 100 dollars spent during the last year
+    // It's a good idea to have check and actual action to be separated in two separate methods
+    // to adhere to the CQS principle, which in this case means
+    // that an operation that should either return a value or mutate the state.
+    // If CanPromote was part of Promote then it would violate it.
+    public virtual Result CanPromote()
+    {
+        if (Status.IsAdvanced)
+            return Result.Failure("The customer already has the advanced status");
+        
+        if (PurchasedMovies.Count(pm => pm.ExpirationDate == ExpirationDate.Infinity
+                                        || pm.ExpirationDate.Date >= DateTime.UtcNow.AddDays(-30)) < 2)
+            return Result.Failure("The customer has to have at least 2 active movies during the last 30 days");
+        
         if (PurchasedMovies
                 .Where(x => x.PurchaseDate > DateTime.UtcNow.AddYears(-1))
                 .Sum(x => x.Price) < 100m)
-            return false;
+            return Result.Failure("The customer has to have at least 100 dollars spent during the last year");
 
         Status = Status.Promote();
 
-        return true;
+        return Result.Success();
+    }
+    
+    public virtual void Promote()
+    {
+        if (CanPromote().IsFailure)
+            throw new Exception();
+
+        Status = Status.Promote();
     }
 }

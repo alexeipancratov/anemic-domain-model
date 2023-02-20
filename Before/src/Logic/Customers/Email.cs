@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 
-namespace Logic.ValueObjects;
+namespace Logic.Customers;
 
 public class Email : ValueObject<Email>
 {

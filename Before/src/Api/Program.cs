@@ -1,5 +1,7 @@
 using Api;
-using Logic.Repositories;
+using Api.Utils;
+using Logic.Customers;
+using Logic.Movies;
 using Logic.Utils;
 
 var builder = WebApplication.CreateBuilder(args);

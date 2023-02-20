@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
-using Logic.ValueObjects;
+using Logic.Movies;
 
-namespace Logic.Entities;
+namespace Logic.Customers;
 
 public class CustomerStatus : ValueObject<CustomerStatus>
 {

@@ -1,4 +1,4 @@
-namespace Api;
+namespace Api.Utils;
 
 public class Envelope<T>
 {

@@ -1,8 +1,6 @@
-﻿using FluentNHibernate;
-using FluentNHibernate.Mapping;
-using Logic.Entities;
+﻿using FluentNHibernate.Mapping;
 
-namespace Logic.Mappings;
+namespace Logic.Movies;
 
 public class MovieMap : ClassMap<Movie>
 {

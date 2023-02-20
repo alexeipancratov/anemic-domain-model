@@ -1,7 +1,7 @@
 using Logic.Utils;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers;
+namespace Api.Utils;
 
 public class BaseController : Controller
 {

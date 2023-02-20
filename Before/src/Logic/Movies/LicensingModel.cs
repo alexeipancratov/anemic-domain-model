@@ -1,4 +1,4 @@
-﻿namespace Logic.Entities;
+﻿namespace Logic.Movies;
 
 public enum LicensingModel
 {
